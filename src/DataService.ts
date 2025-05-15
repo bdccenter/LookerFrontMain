@@ -4,7 +4,7 @@ import { AgenciaNombre } from './components/AgenciaSelector';
 
 
 // URL base para el servidor proxy
-const API_URL = 'https://lokerserver-production.up.railway.app/api';
+const API_URL = 'https://lookerfrontmain-production-4f1d.up.railway.app/api';
 
 // Definimos las interfaces para TypeScript
 export interface Cliente {

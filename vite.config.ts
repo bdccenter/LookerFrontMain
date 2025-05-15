@@ -13,10 +13,14 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      },
       '/*': {
         target: 'index.html',
         changeOrigin: true,
-        rewrite: () => '/index.html'  // Eliminado el parámetro 'path' que no se usa
+        rewrite: () => '/index.html'
       }
     }
   },
