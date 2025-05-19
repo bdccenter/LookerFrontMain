@@ -85,8 +85,11 @@ export const configuracionAgencias = {
 
 // Sistema de caché para evitar recargar todo
 let clientesDataCache: Cliente[] | null = null;
+// Variable para almacenar la agencia actual
 let agenciaActual: AgenciaNombre = 'Gran Auto';
+// Variable para almacenar el total de registros
 let totalRegistros = 0;
+// Variable para almacenar el total de registros
 let todosCargados = false; // Flag para saber si ya se cargaron todos los datos
 
 // Función para establecer la agencia actual
@@ -112,8 +115,8 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
     // Extraer y formatear la fecha de última visita con mejor manejo de errores
     let ultimaVisita: Date | undefined = undefined;
 
-    try {
-      if (dato.ULT_VISITA) {
+    try { // Verificar si existe la fecha de ultima visita
+      if (dato.ULT_VISITA) { // si existe la fecha de ultima visita
         // Agregar logs para depuración
         console.log("Procesando fecha:", dato.ULT_VISITA, "tipo:", typeof dato.ULT_VISITA);
 
