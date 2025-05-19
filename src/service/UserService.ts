@@ -12,7 +12,7 @@ export interface UserData {
 }
 
 const API_URL = 'https://lokerserver-production.up.railway.app';
-
+// const API_URL = 'http://localhost:3001';
 
 /**
  * Obtiene todos los usuarios del sistema

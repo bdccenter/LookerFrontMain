@@ -6,7 +6,7 @@ import { AgenciaNombre } from './components/AgenciaSelector';
 // URL base para el servidor proxy
 
 const API_URL = 'https://lokerserver-production.up.railway.app/api';
-
+// const API_URL = 'http://localhost:3001/api';
 
 // Definimos las interfaces para TypeScript
 export interface Cliente {
@@ -118,7 +118,7 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
     try { // Verificar si existe la fecha de ultima visita
       if (dato.ULT_VISITA) { // si existe la fecha de ultima visita
         // Agregar logs para depuración
-        console.log("Procesando fecha:", dato.ULT_VISITA, "tipo:", typeof dato.ULT_VISITA);
+        // console.log("Procesando fecha:", dato.ULT_VISITA, "tipo:", typeof dato.ULT_VISITA);
 
         // Intentar varios formatos de fecha
         if (typeof dato.ULT_VISITA === 'string' && dato.ULT_VISITA.includes('/')) {

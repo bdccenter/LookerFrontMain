@@ -11,7 +11,7 @@ const USER_KEY = 'autoinsights_user';
 const SESSION_TIMESTAMP_KEY = 'autoinsights_session_timestamp';
 const SESSION_TIMEOUT = 15 * 60 * 15000; 
 const API_URL = 'https://lokerserver-production.up.railway.app';
-
+// const API_URL = 'http://localhost:3001';
 
 /**
  * Inicia sesión con las credenciales proporcionadas
