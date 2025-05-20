@@ -144,14 +144,17 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
         else if (typeof fechaCampo === 'string') {
           if (fechaCampo.includes('/')) {
             // Formato DD/MM/YYYY
-            const partes = fechaCampo.split('/');
-            if (partes.length === 3) {
-              const dia = parseInt(partes[0], 10);
-              const mes = parseInt(partes[1], 10) - 1; // Meses en JS son 0-11
-              const anio = parseInt(partes[2], 10);
+            if (fechaCampo.includes('/')) {
+              // Formato DD/MM/YYYY
+              const partes = fechaCampo.split('/');
+              if (partes.length === 3) {
+                const dia = parseInt(partes[0], 10);
+                const mes = parseInt(partes[1], 10) - 1; // Meses en JS son 0-11
+                const anio = parseInt(partes[2], 10);
 
-              if (!isNaN(dia) && !isNaN(mes) && !isNaN(anio)) {
-                ultimaVisita = new Date(anio, mes, dia);
+                if (!isNaN(dia) && !isNaN(mes) && !isNaN(anio)) {
+                  ultimaVisita = new Date(Date.UTC(anio, mes, dia));
+                }
               }
             }
           } else if (fechaCampo.includes('-')) {
@@ -165,7 +168,10 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
         }
 
         // Validar que la fecha es válida
-        if (ultimaVisita && isNaN(ultimaVisita.getTime())) {
+        if (ultimaVisita && !isNaN(ultimaVisita.getTime())) {
+          // Añadir un día para compensar la diferencia
+          ultimaVisita = new Date(ultimaVisita.getTime() + 24 * 60 * 60 * 1000);
+        } else if (ultimaVisita) {
           console.warn(`Fecha inválida creada para: ${JSON.stringify(fechaCampo)}`);
           ultimaVisita = undefined;
         }
