@@ -114,41 +114,65 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
   return datos.map((dato, index) => {
     // Extraer y formatear la fecha de última visita con mejor manejo de errores
     let ultimaVisita: Date | undefined = undefined;
+    let fechaCampo: any = null;
 
-    try { // Verificar si existe la fecha de ultima visita
-      if (dato.ULT_VISITA) { // si existe la fecha de ultima visita
-        // Agregar logs para depuración
-        // console.log("Procesando fecha:", dato.ULT_VISITA, "tipo:", typeof dato.ULT_VISITA);
+    try {
+      // Intentar diferentes campos de fecha en este orden de prioridad
+      fechaCampo = dato.ULT_VISITA || dato.FECHA_FAC || dato.FECHA_ACT || dato.FECHA_ORD;
 
-        // Intentar varios formatos de fecha
-        if (typeof dato.ULT_VISITA === 'string' && dato.ULT_VISITA.includes('/')) {
-          // Formato DD/MM/YYYY
-          const partes = dato.ULT_VISITA.split('/');
-          if (partes.length === 3) {
-            const [dia, mes, anio] = partes.map(Number);
-            if (!isNaN(dia) && !isNaN(mes) && !isNaN(anio)) {
-              ultimaVisita = new Date(anio, mes - 1, dia);
-              // Validar que la fecha sea válida
-              if (isNaN(ultimaVisita.getTime())) {
-                ultimaVisita = undefined;
+      if (fechaCampo) {
+        // Si es un objeto (caso detectado en tus logs)
+        if (typeof fechaCampo === 'object' && fechaCampo !== null) {
+          // Verificar si tiene propiedades de fecha (año, mes, día)
+          if ('value' in fechaCampo) {
+            // Algunos objetos Date serializados tienen una propiedad value
+            ultimaVisita = new Date(fechaCampo.value);
+          } else if ('year' in fechaCampo && 'month' in fechaCampo && 'day' in fechaCampo) {
+            // Caso donde el objeto contiene año, mes y día directamente
+            ultimaVisita = new Date(
+              fechaCampo.year,
+              fechaCampo.month - 1, // Ajuste ya que los meses en JS son 0-11
+              fechaCampo.day
+            );
+          } else {
+            // Intenta convertir el objeto a string y parsearlo
+            const fechaStr = fechaCampo.toString();
+            ultimaVisita = new Date(fechaStr);
+          }
+        }
+        // Manejo para strings
+        else if (typeof fechaCampo === 'string') {
+          if (fechaCampo.includes('/')) {
+            // Formato DD/MM/YYYY
+            const partes = fechaCampo.split('/');
+            if (partes.length === 3) {
+              const dia = parseInt(partes[0], 10);
+              const mes = parseInt(partes[1], 10) - 1; // Meses en JS son 0-11
+              const anio = parseInt(partes[2], 10);
+
+              if (!isNaN(dia) && !isNaN(mes) && !isNaN(anio)) {
+                ultimaVisita = new Date(anio, mes, dia);
               }
             }
+          } else if (fechaCampo.includes('-')) {
+            // Formato YYYY-MM-DD
+            ultimaVisita = new Date(fechaCampo);
           }
-        } else if (typeof dato.ULT_VISITA === 'string' && dato.ULT_VISITA.includes('-')) {
-          // Formato YYYY-MM-DD
-          ultimaVisita = new Date(dato.ULT_VISITA);
-          // Validar que la fecha sea válida
-          if (isNaN(ultimaVisita.getTime())) {
-            ultimaVisita = undefined;
-          }
-        } else if (dato.FECHA_FAC instanceof Date) {
-          // Si ya es un objeto Date
-          ultimaVisita = dato.FECHA_FAC;
+        }
+        // Si ya es un objeto Date
+        else if (fechaCampo instanceof Date) {
+          ultimaVisita = fechaCampo;
+        }
+
+        // Validar que la fecha es válida
+        if (ultimaVisita && isNaN(ultimaVisita.getTime())) {
+          console.warn(`Fecha inválida creada para: ${JSON.stringify(fechaCampo)}`);
+          ultimaVisita = undefined;
         }
       }
     } catch (error) {
       console.error('Error al convertir fecha:', error);
-      console.error('Valor problemático:', dato.ULT_VISITA);
+      console.error('Valor problemático:', fechaCampo ? JSON.stringify(fechaCampo) : 'null');
       ultimaVisita = undefined;
     }
 

@@ -81,8 +81,10 @@ const determinaCloudTalk = (cliente: Cliente): string => {
 };
 
 // Función para formatear la fecha a "dd mmm aaaa"
+// Función para formatear la fecha a "dd mmm aaaa"
 const formatearFechaTabla = (fecha: Date): string => {
   if (!fecha || isNaN(fecha.getTime())) return "-";
+
   // Formatear la fecha a "dd mmm aaaa"
   const dia = fecha.getDate();
   const mes = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'][fecha.getMonth()];
@@ -926,7 +928,7 @@ function App() {
 
 
   // Manejador para checkboxes de APS
-  
+
 
   // Función para seleccionar solamente un APS
   const handleSolamenteAPS = (aps: string) => {
@@ -1007,7 +1009,7 @@ function App() {
 
   // Función para mostrar/ocultar el filtro de modelos
 
-  
+
 
 
   // Función para mostrar/ocultar el calendario
@@ -2141,30 +2143,7 @@ function App() {
                   ) : 'Siguiente'}
                 </button>
 
-                <Button
-                  variant="contained"
-                  className="ml-2"
-                  size="small"
-                  disabled={cargandoPagina}
-                  onClick={() => {
-                    if (cargandoPagina) return;
-                    limpiarCacheCSV();
-                    setClientesData([]);
-                    setCurrentPage(1);
-                    setIsLoading(true);
-                    setTodosLosDatosCargados(false); // Forzar recarga desde el efecto
-                  }}
-                  sx={{
-                    backgroundColor: '#1976d2', // Color azul
-                    '&:hover': { backgroundColor: '#1565c0' },
-                    textTransform: 'none',
-                    fontSize: '0.875rem',
-                    padding: '0.25rem 0.75rem', // Padding equivalente a px-3 py-1
-                    marginLeft: '0.5rem' // ml-2
-                  }}
-                >
-                  Recargar Datos de {agenciaActual}
-                </Button>
+                
               </div>
             </div>
           </div>
