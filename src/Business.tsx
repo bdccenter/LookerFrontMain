@@ -1,15 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Search, ChevronDown, Calendar } from 'lucide-react';
 import DiasSinVisitaRangeSlider from './components/DiasSinVisitaRangeSlider';
-import {
-  obtenerClientesPaginados,
-  Cliente,
-  limpiarCacheCSV,
-  obtenerMetadatosFiltros,
-  establecerAgenciaActual,
-  configuracionAgencias,  // Añade esta importación
-} from './DataService';
-
+import { obtenerClientesPaginados, Cliente, limpiarCacheCSV,obtenerMetadatosFiltros,establecerAgenciaActual, configuracionAgencias, } from './DataService';
 import FiltroPorSerieAvanzado from './components/FiltroPorSerieAvanzado';
 import { obtenerHistorialBusquedas, guardarEnHistorial } from './service/HistorialBusquedas';
 import { debounce } from 'lodash';
@@ -21,9 +13,6 @@ import { getCurrentUser, getAccessibleAgencias } from './service/AuthService';
 import { getAgencyLogoUrl } from './utilis/AgencyLogoHelper';
 import Button from '@mui/material/Button';
 import { FormControl, InputLabel, Select, MenuItem, Checkbox, ListItemText, OutlinedInput } from '@mui/material';
-
-
-
 
 // Definición de tipos
 type AgenciasType = {
