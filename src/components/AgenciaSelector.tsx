@@ -22,7 +22,7 @@ const AgenciaSelector: React.FC<AgenciaSelectorProps> = ({
   agenciaActual, 
   onAgenciaChange,
   cargando
-}) => {
+}) => { //  documento
   const [menuAbierto, setMenuAbierto] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const currentUser = getCurrentUser();
