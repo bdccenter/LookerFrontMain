@@ -150,7 +150,7 @@ export const getAccessibleAgencias = (): string[] => {
   
   // Si es superusuario o no tiene agencia asignada (NULL en la DB), puede acceder a todas
   if (currentUser.isSuperuser || currentUser.agencia === null) {
-    return ['Gran Auto', 'Gasme', 'Sierra', 'Huerpel', 'Del Bravo'];
+    return [ 'Gran Auto', 'Sierra', 'Huerpel', 'Del Bravo'];
   }
   
   // Si no es superusuario, solo puede acceder a su agencia asignada

@@ -32,17 +32,7 @@ export interface Cliente {
 // Configuración para cada agencia
 export const configuracionAgencias = {
   'Gran Auto': {
-    archivo: 'granauto.csv',
-    encoding: 'cp1252',  // Codificación específica para Gran Auto
-    mapeo: {
-      modelo: 'Modelo',
-      nombreFactura: 'NOMBRE_FAC',
-      agencia: 'AGENCI',
-      fechaUltimaVisita: 'ULT_VISITA'
-    }
-  },
-  'Gasme': {
-    archivo: 'gasme.csv',
+    archivo: 'Gran Auto.csv',
     encoding: 'utf-8',
     mapeo: {
       modelo: 'MODELO',

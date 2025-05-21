@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { getAccessibleAgencias, getCurrentUser } from '../service/AuthService';
 
 // Definir las agencias disponibles como un tipo para mayor seguridad
-export type AgenciaNombre = 'Gran Auto' | 'Gasme' | 'Sierra' | 'Huerpel' | 'Del Bravo';
+export type AgenciaNombre =  | 'Gran Auto' | 'Sierra' | 'Huerpel' | 'Del Bravo';
 
 export interface AgenciaInfo {
   nombre: AgenciaNombre;
@@ -30,8 +30,8 @@ const AgenciaSelector: React.FC<AgenciaSelectorProps> = ({
 
   // Lista completa de agencias disponibles
   const todasLasAgencias: AgenciaInfo[] = [
-    { nombre: 'Gran Auto', archivo: 'granauto.csv', color: '#493F91', activa: true },
-    { nombre: 'Gasme', archivo: 'gasme.csv', color: '#493F91', activa: true },
+
+    { nombre: 'Gran Auto', archivo: 'Gran Auto.csv', color: '#493F91', activa: true },
     { nombre: 'Sierra', archivo: 'sierra.csv', color: '#493F91', activa: true },
     { nombre: 'Huerpel', archivo: 'huerpel.csv', color: '#493F91', activa: true },
     { nombre: 'Del Bravo', archivo: 'delbravo.csv', color: '#493F91', activa: true },

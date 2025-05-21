@@ -1,10 +1,9 @@
 // Define el tipo AgenciaNombre directamente aquí para evitar problemas de importación
-export type AgenciaNombre = 'Gran Auto' | 'Gasme' | 'Sierra' | 'Huerpel' | 'Del Bravo';  // definicio 
+export type AgenciaNombre =  'Gran Auto' | 'Sierra' | 'Huerpel' | 'Del Bravo';  // definicio 
 
 // Mapeo de agencias a URLs de Imgur
 const agencyLogoMap: Record<AgenciaNombre, string> = {
   'Gran Auto': 'https://i.imgur.com/AdAUsQY.jpeg',
-  'Gasme': 'https://i.imgur.com/i4ISsqp.jpeg',
   'Sierra': 'https://i.imgur.com/B7xvLr6.jpeg',
   'Huerpel': 'https://imgur.com/7SnDJ1r.jpeg',
   'Del Bravo': 'https://i.imgur.com/kQzzgUg.jpeg'

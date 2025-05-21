@@ -10,9 +10,7 @@
  * - encoding: codificación específica para el CSV
  */
 const agencyConfig = {
-  // Configuración para cada agencia
-  // Incluye el nombre del archivo CSV, el proyecto de BigQuery, el dataset y la tabla
-  // Además, se especifica la codificación para cada agencia
+
     'Gran Auto': {
       fileName: 'granauto.csv',
       projectId: 'base-maestra-gn',
