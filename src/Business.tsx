@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Search, ChevronDown, Calendar } from 'lucide-react';
 import DiasSinVisitaRangeSlider from './components/DiasSinVisitaRangeSlider';
-import { obtenerClientesPaginados, Cliente, limpiarCacheCSV, obtenerMetadatosFiltros, establecerAgenciaActual, configuracionAgencias } from './DataService';
+import { 
+  obtenerClientesPaginados, 
+  Cliente, 
+  limpiarCacheCSV, 
+  obtenerMetadatosFiltros, 
+  establecerAgenciaActual, 
+  configuracionAgencias,
+  forzarActualizacionDatos  // Añade esta importación
+} from './DataService';
 import FiltroPorSerieAvanzado from './components/FiltroPorSerieAvanzado';
 import { obtenerHistorialBusquedas, guardarEnHistorial } from './service/HistorialBusquedas';
 import { debounce } from 'lodash';
@@ -13,6 +21,7 @@ import { getCurrentUser, getAccessibleAgencias } from './service/AuthService';
 import { getAgencyLogoUrl } from './utilis/AgencyLogoHelper';
 import Button from '@mui/material/Button';
 import { FormControl, InputLabel, Select, MenuItem, Checkbox, ListItemText, OutlinedInput } from '@mui/material';
+
 
 
 // Definición de tipos
@@ -1910,6 +1919,35 @@ function App() {
               />
               Resetear Filtros
             </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setIsLoading(true);
+                forzarActualizacionDatos(agenciaActual).then(() => {
+                  // Una vez completada la actualización, recargar los datos
+                  window.location.reload();
+                }).finally(() => {
+                  setIsLoading(false);
+                });
+              }}
+              size="small"
+              sx={{
+                backgroundColor: '#4caf50',
+                '&:hover': { backgroundColor: '#388e3c' },
+                textTransform: 'none',
+                fontSize: '0.875rem',
+                padding: '0.5rem 1rem',
+                marginLeft: '0.5rem'
+              }}
+              disabled={isLoading}
+            >
+              <img
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2UMUpDQRCGP8QuFlqIT2wENbWFR7ASBRsrsbO3tLRJbeUBLKysLMTCzkYh+CAqFsYi4EKWzWPzXgp9PxzY2eH/dmZ3diFC+B8EzgALbIupGOZisMCpOQIOS2a04zQdFyV6pwr8lAGYVABMQj6S7zLzVsGzqlQdVQxaXf4lslGYGLYrAEbWl2a2dUfWSzTtEq3Xxi9mBBzILO56QTQFsK2U9BZYazLCnnwW9zWfZ55vXoAT1+RX/nrKt9gv8M0BnoAtme/ZCXAgsz7wHPD0ZNYDhgHfUGaHwEhm12qkbqGJvgK7MTv/QwAmTvOzRk7Xab4TI4T5I149XVu58J+DAAAAAElFTkSuQmCC"
+                alt="refresh"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Forzar Actualización
+            </Button>
 
             <Button
               variant="contained"
@@ -2143,7 +2181,7 @@ function App() {
                   ) : 'Siguiente'}
                 </button>
 
-                
+
               </div>
             </div>
           </div>

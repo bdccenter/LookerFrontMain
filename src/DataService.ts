@@ -431,4 +431,63 @@ export const cargarDatosCSV = async (agencia?: AgenciaNombre): Promise<Cliente[]
   }
 };
 
+/**
+ * Fuerza una actualización completa de los datos, limpiando todas las capas de caché
+ * y recargando directamente desde BigQuery
+ * @param {AgenciaNombre} agencia - Agencia para la cual forzar la actualización (opcional)
+ * @returns {Promise<boolean>} - Indica si la operación fue exitosa
+ */
+export const forzarActualizacionDatos = async (agencia?: AgenciaNombre): Promise<boolean> => {
+  try {
+    // Si se especifica una agencia, establecerla
+    if (agencia) {
+      establecerAgenciaActual(agencia);
+    }
+    
+    // Limpiar caché local del frontend
+    clientesDataCache = null;
+    todosCargados = false;
+    
+    console.log(`Forzando actualización completa para ${agenciaActual}...`);
+    
+    // 1. Primero invalidar la caché en el servidor
+    const invalidateResponse = await fetch(`${API_URL}/cache/invalidate/${agenciaActual}`, {
+      method: 'POST'
+    });
+    
+    if (!invalidateResponse.ok) {
+      console.warn(`Advertencia al invalidar caché: ${invalidateResponse.statusText}`);
+      // Continuar a pesar del error
+    } else {
+      console.log('Caché invalidada correctamente en el servidor');
+    }
+    
+    // 2. Luego forzar actualización desde BigQuery
+    const updateResponse = await fetch(`${API_URL}/update`, {
+      method: 'POST'
+    });
+    
+    if (!updateResponse.ok) {
+      throw new Error(`Error al actualizar datos: ${updateResponse.statusText}`);
+    }
+    
+    const updateResult = await updateResponse.json();
+    console.log('Resultado de actualización:', updateResult);
+    
+    if (!updateResult.success) {
+      throw new Error(updateResult.message || 'Error desconocido al actualizar datos');
+    }
+    
+    // 3. Finalmente, recargar datos en el frontend
+    console.log('Recargando datos en el frontend...');
+    await obtenerClientesPaginados(1, 1, true);
+    
+    console.log('Actualización forzada completada exitosamente');
+    return true;
+  } catch (error) {
+    console.error('Error al forzar actualización:', error);
+    return false;
+  }
+};
+
 console.log('Servicio de datos iniciado - Usando conexión a servidor proxy');
