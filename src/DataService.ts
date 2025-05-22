@@ -35,7 +35,7 @@ export const configuracionAgencias = {
     archivo: 'Gran Auto.csv',
     encoding: 'utf-8',
     mapeo: {
-      modelo: 'MODELO',
+      modelo: 'Modelo',
       nombreFactura: 'NOMBRE_FAC',
       agencia: 'AGENCI',
       fechaUltimaVisita: 'FECHA_FAC'
