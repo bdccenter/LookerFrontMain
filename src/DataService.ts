@@ -5,8 +5,8 @@ import { AgenciaNombre } from './components/AgenciaSelector';
 
 // URL base para el servidor proxy
 
-const API_URL = 'https://lokerserver-production.up.railway.app/api';
-// const API_URL = 'http://localhost:3001/api';
+// const API_URL = 'https://lokerserver-production.up.railway.app/api';
+const API_URL = 'http://localhost:3001/api';
 
 // Definimos las interfaces para TypeScript
 export interface Cliente {
@@ -225,6 +225,107 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
   });
 };
 
+/**
+ * Función para debug - muestra el estado de la caché
+ */
+export const debugCache = async (agencia?: AgenciaNombre): Promise<any> => {
+  try {
+    if (agencia) {
+      establecerAgenciaActual(agencia);
+    }
+
+    const response = await fetch(`${API_URL}/cache/debug/${agenciaActual}`);
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener debug de caché: ${response.statusText}`);
+    }
+
+    const debugInfo = await response.json();
+    console.log('🔍 Estado de caché:', debugInfo);
+    return debugInfo;
+  } catch (error) {
+    console.error('Error al obtener debug de caché:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fuerza una actualización COMPLETA eliminando TODA la caché y recargando desde BigQuery
+ * @param {AgenciaNombre} agencia - Agencia para la cual forzar la actualización (opcional)
+ * @param {boolean} forceAll - Si es true, invalida TODA la caché del sistema
+ * @returns {Promise<boolean>} - Indica si la operación fue exitosa
+ */
+export const forceCompleteRefresh = async (agencia?: AgenciaNombre, forceAll: boolean = false): Promise<boolean> => {
+  try {
+    // Si se especifica una agencia, establecerla
+    if (agencia) {
+      establecerAgenciaActual(agencia);
+    }
+
+    // Limpiar caché local del frontend PRIMERO
+    clientesDataCache = null;
+    todosCargados = false;
+
+    console.log(`🚀 Forzando actualización COMPLETA para ${agenciaActual}...`);
+
+    // Endpoint mejorado para forzar actualización completa
+    const endpoint = agenciaActual ?
+      `${API_URL}/force-complete-refresh/${agenciaActual}` :
+      `${API_URL}/force-complete-refresh`;
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ forceAll })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al forzar actualización: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ Resultado de actualización forzosa:', result);
+
+    if (!result.success) {
+      throw new Error(result.message || 'Error desconocido al forzar actualización');
+    }
+
+    // Esperar un momento para que se complete la actualización en el servidor
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Recargar datos en el frontend
+    console.log('🔄 Recargando datos frescos en el frontend...');
+    await obtenerClientesPaginados(1, 1, true);
+
+    console.log('🎉 Actualización forzosa completa exitosa');
+    return true;
+  } catch (error) {
+    console.error('❌ Error al forzar actualización completa:', error);
+    return false;
+  }
+};
+
+/**
+ * Versión mejorada de limpiarCacheCSV que usa el nuevo sistema
+ */
+export const limpiarCacheCompleto = async (): Promise<void> => {
+  console.log('🧹 Limpiando caché completo...');
+
+  // Limpiar caché local
+  clientesDataCache = null;
+  todosCargados = false;
+
+  try {
+    // Usar el nuevo endpoint de invalidación completa
+    await forceCompleteRefresh(agenciaActual, true);
+  } catch (error) {
+    console.error('Error al limpiar caché completo:', error);
+    throw error;
+  }
+};
+
 // Función modificada para cargar datos desde el proxy en lugar de BigQuery directamente
 export const obtenerClientesPaginados = async (
   _pagina: number,
@@ -433,45 +534,45 @@ export const forzarActualizacionDatos = async (agencia?: AgenciaNombre): Promise
     if (agencia) {
       establecerAgenciaActual(agencia);
     }
-    
+
     // Limpiar caché local del frontend
     clientesDataCache = null;
     todosCargados = false;
-    
+
     console.log(`Forzando actualización completa para ${agenciaActual}...`);
-    
+
     // 1. Primero invalidar la caché en el servidor
     const invalidateResponse = await fetch(`${API_URL}/cache/invalidate/${agenciaActual}`, {
       method: 'POST'
     });
-    
+
     if (!invalidateResponse.ok) {
       console.warn(`Advertencia al invalidar caché: ${invalidateResponse.statusText}`);
       // Continuar a pesar del error
     } else {
       console.log('Caché invalidada correctamente en el servidor');
     }
-    
+
     // 2. Luego forzar actualización desde BigQuery
     const updateResponse = await fetch(`${API_URL}/update`, {
       method: 'POST'
     });
-    
+
     if (!updateResponse.ok) {
       throw new Error(`Error al actualizar datos: ${updateResponse.statusText}`);
     }
-    
+
     const updateResult = await updateResponse.json();
     console.log('Resultado de actualización:', updateResult);
-    
+
     if (!updateResult.success) {
       throw new Error(updateResult.message || 'Error desconocido al actualizar datos');
     }
-    
+
     // 3. Finalmente, recargar datos en el frontend
     console.log('Recargando datos en el frontend...');
     await obtenerClientesPaginados(1, 1, true);
-    
+
     console.log('Actualización forzada completada exitosamente');
     return true;
   } catch (error) {

@@ -5,6 +5,9 @@ import { logout, getCurrentUser } from '../service/AuthService';
 import { IoLogOut } from "react-icons/io5";
 import AdminPanel from './AdminPanel';
 import Button from '@mui/material/Button';
+import { forceCompleteRefresh, debugCache } from '../DataService';
+
+
 
 interface NavbarProps {
   agenciaActual: AgenciaNombre;
@@ -25,6 +28,34 @@ const Navbar: React.FC<NavbarProps> = ({ agenciaActual, onAgenciaChange, isLoadi
   // Solo mostramos el botón de Admin si el usuario es superusuario
   const isSuperUser = currentUser?.isSuperuser;
 
+  const handleDebugCache = async () => {
+    try {
+      console.log('🔍 Obteniendo estado de caché...');
+      await debugCache(agenciaActual);
+    } catch (error) {
+      console.error('Error al obtener debug:', error);
+      alert('Error al obtener información de debug');
+    }
+  };
+
+  const handleForceRefresh = async () => {
+    if (confirm(`¿Estás seguro de que quieres forzar una actualización COMPLETA para ${agenciaActual}? Esto eliminará toda la caché y recargará desde BigQuery.`)) {
+      try {
+        console.log('🚀 Iniciando actualización forzosa...');
+        const success = await forceCompleteRefresh(agenciaActual);
+        if (success) {
+          alert('✅ Actualización forzosa completada exitosamente');
+          window.location.reload(); // Recargar la página para mostrar datos frescos
+        } else {
+          alert('❌ Error en la actualización forzosa');
+        }
+      } catch (error) {
+        console.error('Error en actualización forzosa:', error);
+        alert('❌ Error en la actualización forzosa');
+      }
+    }
+  };
+
   return (
     <>
       <div className="bg-[#493F91] shadow-md">
@@ -36,12 +67,12 @@ const Navbar: React.FC<NavbarProps> = ({ agenciaActual, onAgenciaChange, isLoadi
 
               {/* Botón de Panel Admin - solo visible para superusuarios */}
               {isSuperUser && (
-                <Button 
-                  variant="contained" 
-                  onClick={() => setIsAdminPanelOpen(true)} 
+                <Button
+                  variant="contained"
+                  onClick={() => setIsAdminPanelOpen(true)}
                   size="small"
-                  sx={{ 
-                    backgroundColor: '#1976d2', 
+                  sx={{
+                    backgroundColor: '#1976d2',
                     '&:hover': { backgroundColor: '#1565c0' },
                     textTransform: 'none',
                     fontSize: '0.875rem',
@@ -74,8 +105,8 @@ const Navbar: React.FC<NavbarProps> = ({ agenciaActual, onAgenciaChange, isLoadi
                 onClick={handleLogout}
                 size="small"
                 startIcon={<IoLogOut />}
-                sx={{ 
-                  backgroundColor: '#dc2626', 
+                sx={{
+                  backgroundColor: '#dc2626',
                   '&:hover': { backgroundColor: '#b91c1c' },
                   textTransform: 'none',
                   fontSize: '0.875rem',
@@ -84,6 +115,40 @@ const Navbar: React.FC<NavbarProps> = ({ agenciaActual, onAgenciaChange, isLoadi
               >
                 Cerrar sesión
               </Button>
+
+              {isSuperUser && (
+                <>
+                  <Button
+                    variant="contained"
+                    onClick={handleDebugCache}
+                    size="small"
+                    sx={{
+                      backgroundColor: '#f59e0b',
+                      '&:hover': { backgroundColor: '#d97706' },
+                      textTransform: 'none',
+                      fontSize: '0.75rem',
+                      padding: '0.25rem 0.75rem'
+                    }}
+                  >
+                    Debug Caché
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    onClick={handleForceRefresh}
+                    size="small"
+                    sx={{
+                      backgroundColor: '#dc2626',
+                      '&:hover': { backgroundColor: '#b91c1c' },
+                      textTransform: 'none',
+                      fontSize: '0.75rem',
+                      padding: '0.25rem 0.75rem'
+                    }}
+                  >
+                    Forzar Actualización
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
