@@ -230,18 +230,18 @@ const mapearDatosACliente = (datos: any[]): Cliente[] => {
  */
 export const debugCache = async (agencia?: AgenciaNombre): Promise<any> => {
   try {
-    if (agencia) {
+    if (agencia) { // Si se especifica una agencia, establecerla
       establecerAgenciaActual(agencia);
     }
 
     const response = await fetch(`${API_URL}/cache/debug/${agenciaActual}`);
 
-    if (!response.ok) {
+    if (!response.ok) { // Verifica si la respuesta es correcta
       throw new Error(`Error al obtener debug de caché: ${response.statusText}`);
     }
 
-    const debugInfo = await response.json();
-    console.log('🔍 Estado de caché:', debugInfo);
+    const debugInfo = await response.json(); // Parsea la respuesta JSON 
+    console.log('🔍 Estado de caché:', debugInfo); // Muestra el estado de la caché en consola
     return debugInfo;
   } catch (error) {
     console.error('Error al obtener debug de caché:', error);
@@ -256,7 +256,7 @@ export const debugCache = async (agencia?: AgenciaNombre): Promise<any> => {
  * @returns {Promise<boolean>} - Indica si la operación fue exitosa
  */
 export const forceCompleteRefresh = async (agencia?: AgenciaNombre, forceAll: boolean = false): Promise<boolean> => {
-  try {
+  try { 
     // Si se especifica una agencia, establecerla
     if (agencia) {
       establecerAgenciaActual(agencia);

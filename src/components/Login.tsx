@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login, isAuthenticated } from '../service/AuthService';
 import Button from '@mui/material/Button';
+import { TextField } from '@mui/material';
 
 
 const Login: React.FC = () => {
@@ -83,28 +84,104 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-white mb-2">Correo</label>
-            <input
-              type="email"
+            <TextField
               id="email"
+              type="email"
+              label="Correo"
               placeholder="driver@grupogranaauto.com.mx"
-              className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white"
+              variant="outlined"
+              fullWidth
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: '#1f2937', // bg-gray-800
+                  '& fieldset': {
+                    borderColor: '#374151', // border-gray-700
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#6b7280', // hover state
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#3b82f6', // focus color (azul)
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: '#ffffff', // blanco brillante para mejor visibilidad
+                  fontWeight: '500', // un poco más bold para que resalte
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#ffffff', // blanco cuando está en focus
+                  fontWeight: '600', // más bold en focus
+                },
+                '& .MuiInputLabel-shrink': {
+                  color: '#ffffff', // blanco cuando está shrunk (flotando arriba)
+                  fontWeight: '600', // más bold cuando flota
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)', // fondo SOLO cuando flota arriba
+                  padding: '0 4px', // padding SOLO cuando flota
+                  borderRadius: '4px', // esquinas SOLO cuando flota
+                },
+                '& .MuiOutlinedInput-input': {
+                  color: '#ffffff', // text color white
+                  padding: '12px', // p-3 equivalent
+                },
+                '& .MuiOutlinedInput-input::placeholder': {
+                  color: '#9ca3af', // placeholder color
+                  opacity: 1,
+                },
+              }}
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-white mb-2">Contraseña</label>
-            <input
-              type="password"
+            <TextField
               id="password"
+              type="password"
+              label="Contraseña"
               placeholder="****************"
-              className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white"
+              variant="outlined"
+              fullWidth
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: '#1f2937', // bg-gray-800
+                  '& fieldset': {
+                    borderColor: '#374151', // border-gray-700
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#6b7280', // hover state
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#3b82f6', // focus color (azul)
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: '#ffffff', // blanco brillante para mejor visibilidad
+                  fontWeight: '500', // un poco más bold para que resalte
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#ffffff', // blanco cuando está en focus
+                  fontWeight: '600', // más bold en focus
+                },
+                '& .MuiInputLabel-shrink': {
+                  color: '#ffffff', // blanco cuando está shrunk (flotando arriba)
+                  fontWeight: '600', // más bold cuando flota
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)', // fondo SOLO cuando flota arriba
+                  padding: '0 4px', // padding SOLO cuando flota
+                  borderRadius: '4px', // esquinas SOLO cuando flota
+                },
+                '& .MuiOutlinedInput-input': {
+                  color: '#ffffff', // text color white
+                  padding: '12px', // p-3 equivalent
+                },
+                '& .MuiOutlinedInput-input::placeholder': {
+                  color: '#9ca3af', // placeholder color
+                  opacity: 1,
+                },
+              }}
             />
           </div>
 

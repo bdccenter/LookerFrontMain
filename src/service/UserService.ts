@@ -17,8 +17,8 @@ const API_URL = 'https://lokerserver-production.up.railway.app';
 /**
  * Obtiene todos los usuarios del sistema
  */
-export const getAllUsers = async (): Promise<UserData[]> => {
-  try {
+export const getAllUsers = async (): Promise<UserData[]> => { // Asegurarse de que el tipo de retorno es correcto
+  try { // Asegurarse de que la URL sea correcta
     console.log('Solicitando usuarios desde:', `${API_URL}/users`);
     const response = await fetch(`${API_URL}/users`, {
       method: 'GET',
@@ -33,9 +33,9 @@ export const getAllUsers = async (): Promise<UserData[]> => {
 
     console.log('Respuesta del servidor:', response.status, response.statusText);
     
-    if (!response.ok) {
+    if (!response.ok) { //  Asegurar que la respuesta sea correcta
       let errorMessage = 'Error al obtener usuarios';
-      try {
+      try { // Asegurar que la respuesta de error se maneje correctamente
         const errorData = await response.json();
         errorMessage = errorData.message || errorMessage;
       } catch (e) {
@@ -47,14 +47,14 @@ export const getAllUsers = async (): Promise<UserData[]> => {
     const data = await response.json();
     console.log('Datos recibidos:', data);
     
-    if (!data.users) {
+    if (!data.users) { // Asegurar que la respuesta contenga la propiedad "users"
       console.warn('La respuesta no contiene la propiedad "users":', data);
       // Si el servidor no devuelve {users: [...]} sino directamente un array
       return Array.isArray(data) ? data : [];
     }
     
     return data.users;
-  } catch (error) {
+  } catch (error) { 
     console.error('Error en getAllUsers:', error);
     throw error;
   }
@@ -63,8 +63,8 @@ export const getAllUsers = async (): Promise<UserData[]> => {
 /**
  * Actualiza un usuario existente
  */
-export const updateUser = async (userId: number, userData: Partial<UserData>): Promise<UserData> => {
-  try {
+export const updateUser = async (userId: number, userData: Partial<UserData>): Promise<UserData> => { // Asegurarse de que el tipo de retorno es correcto
+  try { 
     console.log(`Actualizando usuario ${userId} con datos:`, userData);
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: 'PUT',
